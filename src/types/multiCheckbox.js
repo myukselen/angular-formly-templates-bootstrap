@@ -56,7 +56,13 @@ export default ngModule => {
               $scope.model[opts.key].length > 0 &&
               expressionValue;
 
-            $scope.fc.$setValidity('required', valid);
+            if (angular.isArray($scope.fc)) {
+              angular.forEach($scope.fc, function (formControl) {
+                formControl.$setValidity('required', valid);
+              });
+            } else {
+              $scope.fc.$setValidity('required', valid);
+            }
           }
         }
 
@@ -69,7 +75,13 @@ export default ngModule => {
           });
 
           // Must make sure we mark as touched because only the last checkbox due to a bug in angular.
-          $scope.fc.$setTouched();
+          if (angular.isArray($scope.fc)) {
+            angular.forEach($scope.fc, function (formControl) {
+              formControl.$setTouched();
+            });
+          } else {
+            $scope.fc.$setTouched();
+          }
           checkValidity(true);
           
           if ($scope.to.onChange) {
